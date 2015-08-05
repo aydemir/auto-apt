@@ -21,7 +21,7 @@ setup(
     name = auto_apt_globals.app_name,
     version = auto_apt_globals.app_version_string,
     packages = ["."],
-    install_requires = [],
+    install_requires = ["plac"],
     
     # metadata for upload to PyPI
     author = auto_apt_globals.app_author,
