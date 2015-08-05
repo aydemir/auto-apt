@@ -9,12 +9,14 @@ BINDIR=$(DESTDIR)/usr/bin
 LIBDIR=$(DESTDIR)/usr/lib/$(package)
 CACHEDIR=$(DESTDIR)/var/cache/$(package)
 ETCDIR=$(DESTDIR)/etc/$(package)
+PYTHON ?= python
 
 DEFS=-DUSE_DETECT -DDEBUG
 CC=gcc
 CFLAGS=-g -Wall -finline-functions -Ipkgcdb $(DEFS)
 
 all: auto-apt.so auto-apt-pkgcdb
+	$(PYTHON) setup.py build
 
 auto-apt.so: auto-apt.o pkgcdb/pkgcdb2.a
 	$(CC) -shared -o auto-apt.so auto-apt.o -lc -ldl 
@@ -36,6 +38,7 @@ install: all
 	install -m 644 auto-apt.so $(SHLIBDIR)/
 	install -m 644 paths.list $(ETCDIR)/
 #	install -m 644 paths.list commands.list $(ETCDIR)/
+	$(PYTHON) setup.py install
 
 clean:
 	(cd pkgcdb && $(MAKE) clean)

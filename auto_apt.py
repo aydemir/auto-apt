@@ -71,7 +71,7 @@ SUBCOMMAND_DEBUILD = "debuild"
 SUBCOMMAND_STATUS = "status"
 
 AUTO_APT_ID = '$Id: auto-apt.sh,v %s %s ukai Exp $' % (
-    auto_apt_globals.version_string, str(datetime.datetime.now()), ) # used in
+    auto_apt_globals.app_version_string, str(datetime.datetime.now()), ) # used in
     # usage message
 AUTO_APT_PKGCDB='/usr/lib/auto-apt/auto-apt-pkgcdb'
 AUTO_APT_SO='/lib/auto-apt.so'

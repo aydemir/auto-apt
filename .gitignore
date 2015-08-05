@@ -3,5 +3,10 @@
 *.o
 *.so
 *.a
+*.pyc
 auto-apt-pkgcdb
+auto-apt.fr.1
 
+build/
+dist/
+auto_apt.egg-info/
