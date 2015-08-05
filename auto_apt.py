@@ -511,5 +511,9 @@ def debuild(pkgs, db, yes):
 def status(ld_preload):
     raise Exception("not implemented yet (find out what the different modes are (documentation is ridiculous currently)")
 
-if __name__ == "__main__":
+# necessary for setuptools entry_points
+def main():
     plac.call(auto_apt)
+
+if __name__ == "__main__":
+    main()
