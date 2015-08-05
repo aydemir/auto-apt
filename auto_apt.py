@@ -27,6 +27,8 @@ import logging
 import subprocess as sp
 import re
 import plac
+import auto_apt_globals
+import datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
