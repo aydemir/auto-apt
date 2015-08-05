@@ -1,9 +1,23 @@
-#! /usr/bin/python
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # auto-apt -- on demand package installation tool
 # Copyright (c) 2000 Fumitoshi UKAI <ukai@debian.or.jp>
 # GPL
-# 
+
 # AUTO_APT_DEBUG=<defined?>
 # AUTO_APT_VERBOSE=<defined?>
 # AUTO_APT_QUIET=<defined?>
@@ -94,7 +108,7 @@ def __check_x_terminal_emulator__():
     return False
 
 @plac.annotations(
-    x_usage=('Whether or not to use a present X server instance', 'option'),
+    x_usage=('Whether or not to use a present X server instance', 'option', "x"),
     simulate=('simulate', 'flag'),
     no_assume_yes=("Don't add `--assume-yes` to invokations of `apt-get`", "flag"),
     quiet=("Don't print any output", "flag"),
@@ -109,13 +123,13 @@ def __check_x_terminal_emulator__():
     sudo=("Path to the sudo binary to use", "option"),
     subcommands=('the subcommand', 'positional'),
 )
-def auto_apt(x_usage=x_usage_default, simulate=simulate_default, 
-    no_assume_yes=no_assume_yes_default, quiet=quiet_default, no_bg=no_bg_default, 
+def auto_apt(x_usage=x_usage_default, simulate=simulate_default,
+    no_assume_yes=no_assume_yes_default, quiet=quiet_default, no_bg=no_bg_default,
     no_detect=no_detect_default, verbose=False,
-    accept=AUTO_APT_ACCEPT, hook=AUTO_APT_HOOK, 
-    db=AUTO_APT_DB, file_db=AUTO_APT_FILEDB, 
+    accept=AUTO_APT_ACCEPT, hook=AUTO_APT_HOOK,
+    db=AUTO_APT_DB, file_db=AUTO_APT_FILEDB,
     apt_get=apt_get_default, sudo=sudo_default, *subcommands):
-    """`auto-apt` uses the "LD_PRELOAD trick" to intercept certain library 
+    """`auto-apt` uses the "LD_PRELOAD trick" to intercept certain library
     functions defined in `apt-get` by wrapping their behavior in ifself which
     allows to install `apt` packages on demand (e.g. while running `make` during
     a compilation
@@ -184,7 +198,7 @@ def requirepkg(cmd, pkg, apt_get):
         raise ValueError("cmd '%s' isn't executable" % (cmd, ))
 
 def usage():
-    logger.info("%s", 
+    logger.info("%s",
         """%s
 
         Usage: auto-apt [options] command [arg ...]
@@ -215,14 +229,14 @@ def usage():
                 useful to get build-depends:
             status - Report current environments (auto-apt or not)
 
-         For some commands, command name with "-local" suffix, it will use 
+         For some commands, command name with "-local" suffix, it will use
          pkgfiles.db, which is created by update-local command, instead of
          pkgcontents.db
 
         Options:
             [-s] [-y] [-q] [-i] [-x] [-X]
             [-a dists] [-p hooks]
-            [-D pkgcontents.bin] [-F pkgfiles.bin] [-L detect.list] 
+            [-D pkgcontents.bin] [-F pkgfiles.bin] [-L detect.list]
 
         See the auto-apt(1) manual pages.
         """ % (AUTO_APT_ID, )
@@ -234,8 +248,8 @@ def run(cmds, apt_get, sudo, quiet):
     Runs the list of command parts `cmds` with `auto-apt run` subcommand.
     """
     if str(type(cmds)) != "<type 'list'>":
-        raise ValueError("cmds needs to be a list") # avoid nonsense error 
-            # message if something different from a list if passed to 
+        raise ValueError("cmds needs to be a list") # avoid nonsense error
+            # message if something different from a list if passed to
             # subprocess.*
     if not os.path.exists(apt_get):
         raise ValueError("apt-get binary '%s' doesn't exist" % (apt_get, ))
@@ -248,7 +262,7 @@ def run(cmds, apt_get, sudo, quiet):
     if not quiet:
         logger.info("Entering auto-apt mode: ")
         logger.info("Exit the command to leave auto-apt mode.")
-    
+
     try:
         sp.check_call(cmds, stdout=sp.PIPE, env={'LD_PRELOAD': '%s' % (AUTO_APT_SO, )})
         logger.debug("auto-apt subprocess for '%s' succeeded" % (str(cmds)))
@@ -260,10 +274,10 @@ def download_content_file(content_file, content_file_url, wget):
     protocol = urlparse.parseurl(content_file_url).scheme
     # proxy setting
     a = augeas.Augeas()
-    host = a.match("/files/etc/apt/apt.conf/*") # doesn't work... maybe try 
+    host = a.match("/files/etc/apt/apt.conf/*") # doesn't work... maybe try
         # installing lenses from source -> skip
     logger.warn("proxy support not supported")
-    
+
 #             if test "${method}_proxy" = ""; then
 #                host=`echo $url | sed -e 's=^//==' -e 's=/.*=='`
 #		eval `apt-config shell ${method}_proxy Acquire::${method}::Proxy`
@@ -296,7 +310,7 @@ def update(arg1, file_db, dpkg, apt_config, wget, rsh, ssh, gunzip, nodownload=F
         raise ValueError("E: update: cache dir not found: %s" % (cache_dir, ))
     if not os.access(cache_dir, os.W_OK):
         raise ValueError("E: You need write permission for %s" % (cache_dir, ))
-    
+
     arch = sp.check_output([dpkg, "--print-architecture"])
 
     os.remove(AUTO_APT_DB)
@@ -304,8 +318,8 @@ def update(arg1, file_db, dpkg, apt_config, wget, rsh, ssh, gunzip, nodownload=F
         sp.check_output([apt_config, "shell", APT_ETC, "Dir::Etc/", SOURCES_LIST, "Dir::Etc::sourcelist"], cwd=cache_dir)
         if not os.path.exists(os.path.join(APT_ETC, SOURCES_LIST)):
             raise ValueError("E: apt sources.list:$APT_ETC/$SOURCES_LIST not found")
-	os.symlink(os.path.join(APT_ETC, SOURCES_LIST), AUTO_APT_SOURCES_LIST)
-        
+        os.symlink(os.path.join(APT_ETC, SOURCES_LIST), AUTO_APT_SOURCES_LIST)
+
         a = augeas.Augeas()
         auto_apt_sources_list_entries = a.match(os.path.join("/files", AUTO_APT_SOURCES_LIST.lstrip("/"), "*"))
         pkgs_to_store = [] # the package names to store into pkgcdb
@@ -314,8 +328,8 @@ def update(arg1, file_db, dpkg, apt_config, wget, rsh, ssh, gunzip, nodownload=F
             import urlparse
             method = urlparse.parseurl(uri).scheme
             content_file_name = "Contents-%s.gz" % (arch, )
-            u= "prefix" # there's an undocumented (grrr...) file name prefix `u` in the 
-                # original shell script which is created with 
+            u= "prefix" # there's an undocumented (grrr...) file name prefix `u` in the
+                # original shell script which is created with
                 # u=`echo $url | sed -e 's,^/*,,' -e 's:/:_:g' -e 's:__*:_:g'`
             content_file_name_prefixed = os.path.join(u, content_file_name)
             if method in ["http", "ftp"]:
@@ -335,7 +349,7 @@ def update(arg1, file_db, dpkg, apt_config, wget, rsh, ssh, gunzip, nodownload=F
                 logger.debug("done downloading content file '%s'" % (content_file_url, ))
             if method == "file":
                 os.symlink(os.path.join(uri, content_file_name), content_file_name_prefixed)
-            
+
             if not os.path.exists(content_file_name_prefixed):
                 raise ValueError("download or linking failed")
             parse_content_file_gz(content_file_name_prefixed)
@@ -406,7 +420,7 @@ def install(filename, simulate, download, upgraded, assumeyes, verbose):
         raise ValueError("E: no candidate found for file %s" % (filename, ))
     if len(pkgs > 1):
        raise ValueError("E: multiple candidates %s found for file %s" % (pkgs, filename, ))
-    
+
     aptopt=[]
     if simulate:
         aptopt.append("-s")
@@ -427,7 +441,7 @@ def install(filename, simulate, download, upgraded, assumeyes, verbose):
     verbose=("verbose"),
 )
 def list(db, full, verbose):
-    if full:        
+    if full:
         found_db = False
         for content_file_name in os.listdir(db):
             if re.match("*_Contents-*.gz", content_file_name) is None:
@@ -452,7 +466,7 @@ def debuild(pkgs, db, yes):
         answer = None
         while not anwer in ["y", "Y", "n", "N"]:
             answer = raw_input("""You have no $AUTO_APT_FILEDB
-                It is recommended to create $fdb to get right build-depends, 
+                It is recommended to create $fdb to get right build-depends,
                 but it takes too much time to generate $fdb.\n
                 Create it now ? [Y/n] """)
         if answer == "y" or answer == "Y":
@@ -461,28 +475,28 @@ def debuild(pkgs, db, yes):
             logger.info("ok, run without $fdb")
     else:
         update_local()
-        
+
     requirepkg("/usr/bin/dpkg-parsechangelog", "dpkg-dev")
-    
+
     # parse package
     dpkg_parse_changelog_output=sp.check_output(["dpkg-parsechangelog"])
     dpkg_parse_changelog_match = re.match("^Source: //p")
     if dpkg_parse_changelog_match is None:
         raise Exception("E: badly formatted changelog file, no Source:?")
     package = dpkg_parse_changelog_match.group(0)
-    
+
     # parse version
     dpkg_parse_changelog_match_version = re.match("^Version: //p")
     if dpkg_parse_changelog_match_version is None:
         raise Exception("E: badly formatted changelog file, no Version:?")
-    
+
     # determine architecture by architecture of dpkg-dev package and fall back
     # to `dpkg --print-architecture`
     arch = sp.check_output(["dpkg-architecture", "-q%s" % (DEB_HOST_ARCH, )])
     if arch is None:
         arch = sp.check_output([dpkg, "--print-architecture"])
     ddb = os.path.join(db, "%s%s:%s.lists" % (package, version, arch, ))
-    
+
     if os.path.exists(ddb):
         if yes:
             answer = None
