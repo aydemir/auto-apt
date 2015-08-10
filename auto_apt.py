@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 #    This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ X_USAGE_NO= 0
 X_USAGE_AUTO = 2
 x_usage_default = X_USAGE_AUTO
 simulate_default = False
-no_assume_yes_default= False
+assume_yes_default= False
 quiet_default = False
 no_bg_default = False
 no_detect_default = False
@@ -110,9 +110,9 @@ def __check_x_terminal_emulator__():
 @plac.annotations(
     x_usage=('Whether or not to use a present X server instance', 'option', "x"),
     simulate=('simulate', 'flag'),
-    no_assume_yes=("Don't add `--assume-yes` to invokations of `apt-get`", "flag"),
+    assume_yes=("Add `--assume-yes` to invokations of `apt-get`", "flag", "y"),
     quiet=("Don't print any output", "flag"),
-    no_bg=("Don't run commands in background", "flag"),
+    no_bg=("Don't run commands in background", "flag", "i"),
     no_detect=("Don't detect ? by default", "flag"),
     verbose=("Produce verbose (more) output", "flag"),
     accept=("A filter of dists parts to accept", "option"),
@@ -124,7 +124,7 @@ def __check_x_terminal_emulator__():
     subcommands=('the subcommand', 'positional'),
 )
 def auto_apt(x_usage=x_usage_default, simulate=simulate_default,
-    no_assume_yes=no_assume_yes_default, quiet=quiet_default, no_bg=no_bg_default,
+    assume_yes=assume_yes_default, quiet=quiet_default, no_bg=no_bg_default,
     no_detect=no_detect_default, verbose=False,
     accept=AUTO_APT_ACCEPT, hook=AUTO_APT_HOOK,
     db=AUTO_APT_DB, file_db=AUTO_APT_FILEDB,
@@ -247,7 +247,7 @@ def run(cmds, apt_get, sudo, quiet):
     """
     Runs the list of command parts `cmds` with `auto-apt run` subcommand.
     """
-    if str(type(cmds)) != "<type 'list'>":
+    if str(type(cmds)) != "<type 'list'>" and str(type(cmds)) != "<class 'list'>":
         raise ValueError("cmds needs to be a list") # avoid nonsense error
             # message if something different from a list if passed to
             # subprocess.*
