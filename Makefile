@@ -15,8 +15,7 @@ DEFS=-DUSE_DETECT -DDEBUG
 CC=gcc
 CFLAGS=-g -Wall -finline-functions -Ipkgcdb $(DEFS)
 
-all: auto-apt.so auto-apt-pkgcdb
-	$(PYTHON) setup.py build
+all: auto-apt.so auto-apt-pkgcdb wrapper
 
 auto-apt.so: auto-apt.o pkgcdb/pkgcdb2.a
 	$(CC) -shared -o auto-apt.so auto-apt.o -lc -ldl 
@@ -30,6 +29,9 @@ auto-apt-pkgcdb: auto-apt-pkgcdb.o pkgcdb/pkgcdb2.a
 pkgcdb/pkgcdb2.a:
 	(cd pkgcdb && \
 	 $(MAKE) pkgcdb2.a CC="$(CC)" DEFS="$(DEFS)" CFLAGS="$(CFLAGS)")
+
+wrapper:
+	$(PYTHON) setup.py build
 
 install: all
 	install -m 755 auto-apt.sh $(BINDIR)/auto-apt
