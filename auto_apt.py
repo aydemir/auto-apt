@@ -264,8 +264,9 @@ def run(cmds, apt_get, sudo, quiet):
         logger.info("Exit the command to leave auto-apt mode.")
 
     try:
-        sp.check_call(cmds, stdout=sp.PIPE, env={'LD_PRELOAD': '%s' % (AUTO_APT_SO, )})
-        logger.debug("auto-apt subprocess for '%s' succeeded" % (str(cmds)))
+        logger.debug("starting auto-apt subprocess '%s'" % (str(cmds),))
+        sp.check_call(cmds, env={'LD_PRELOAD': '%s' % (AUTO_APT_SO, )})
+        logger.debug("auto-apt subprocess for '%s' succeeded" % (str(cmds),))
     except sp.CalledProcessError as ex:
         logger.error("E: Exec $1 failed, auto-apt failed")
         raise ex

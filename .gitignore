@@ -7,6 +7,47 @@
 auto-apt-pkgcdb
 auto-apt.fr.1
 
+# python related
 build/
 dist/
 auto_apt.egg-info/
+
+# automake related
+.deps/
+**/Makefile
+**/Makefile.in
+.dirstamp
+aclocal.m4
+ar-lib
+autom4te.cache/
+check.h
+check.h.in
+check.h.in~
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+install-sh
+libtool
+ltmain.sh
+m4/
+missing
+pkgcdb/.libs/
+pkgcdb/libpkgcdb2.la
+pkgcdb/libpkgcdb2_la-mempool.lo
+pkgcdb/libpkgcdb2_la-pathnode.lo
+pkgcdb/libpkgcdb2_la-pkgcdb2.lo
+pkgcdb/libpkgcdb2_la-pkgtab.lo
+pkgcdb/libpkgcdb2_la-strtab.lo
+pkgcdb/main
+stamp-h1
+test-driver
+tests/.libs/check_auto_apt
+tests/.libs/lt-check_auto_apt
+tests/check_auto_apt
+tests/check_auto_apt.log
+tests/check_auto_apt.trs
+tests/test-suite.log

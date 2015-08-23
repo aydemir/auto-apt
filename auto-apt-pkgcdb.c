@@ -11,6 +11,7 @@
 #include "pkgcdb/strtab.h"
 #include "pkgcdb/pathnode.h"
 #include "pkgcdb/pkgcdb2.h"
+#include "auto-apt-pkgcdb.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,10 +21,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-static int profile = 0;
-
-static char *prog;
-
 static void
 delete_pathnode_entry(PathNodeTree pnt,
 		      char *path, struct path_node *pn, void *arg)
@@ -32,7 +29,7 @@ delete_pathnode_entry(PathNodeTree pnt,
     for (npn = pn; npn != NULL; npn = pathnode_next(pnt, npn)) {
 	pkg_id pid = pathnode_package(pnt, npn);
 	if (pkg_cmp(&pid, (pkg_id *)arg) == 0) {
-	    MSG(("%s%s\t%s\n", 
+	    MSG(("%s%s\t%s\n",
 		 path, pathnode_pathname(pnt, pn),
 		 pathnode_packagename(pnt, npn)));
 	    pathnode_delete(pnt, npn);
@@ -41,7 +38,7 @@ delete_pathnode_entry(PathNodeTree pnt,
 }
 
 static void
-print_pathnode_entry(PathNodeTree pnt, 
+print_pathnode_entry(PathNodeTree pnt,
 		     char *path, struct path_node *pn, void *arg)
 {
     struct path_node *npn;
@@ -53,27 +50,6 @@ print_pathnode_entry(PathNodeTree pnt,
 	printf("%s", pathnode_packagename(pnt, npn));
     }
     printf("\n");
-}
-
-
-static void
-usage()
-{
-    fprintf(stderr, "usage: %s [option] [command ...]\n"
-	    "command:\n"
-	    "	put\n"
-	    "	get filename\n"
-	    "	list\n"
-	    "	del package\n"
-	    "option:\n"
-	    "	-v	verbose\n"
-	    "	-q	quiet\n"
-	    "	-p	profile\n"
-	    "	-d	debug\n"
-	    "	-f dbfile\n"
-	    "	-P paths.list\n"
-	    ,  prog);
-    exit(0);
 }
 
 static int
@@ -103,10 +79,10 @@ timer_stop(struct timeval *tvp)
 static int validchartab[256] = {
 /* 0x00 */   0, 0, 0, 0, 0, 0, 0, 0,	0, 0, 0, 0, 0, 0, 0, 0,
 /* 0x10 */   0, 0, 0, 0, 0, 0, 0, 0,    0, 0, 0, 0, 0, 0, 0, 0,
-/* 0x20 */   0, 1, 0, 1, 1, 1, 0, 0,    0, 0, 0, 1, 1, 1, 1, 1, 
+/* 0x20 */   0, 1, 0, 1, 1, 1, 0, 0,    0, 0, 0, 1, 1, 1, 1, 1,
 /* 0x30 */   1, 1, 1, 1, 1, 1, 1, 1,    1, 1, 1, 0, 0, 1, 0, 0,
 /* 0x40 */   1, 1, 1, 1, 1, 1, 1, 1,    1, 1, 1, 1, 1, 1, 1, 1,
-/* 0x50 */   1, 1, 1, 1, 1, 1, 1, 1,    1, 1, 1, 0, 0, 0, 1, 1, 
+/* 0x50 */   1, 1, 1, 1, 1, 1, 1, 1,    1, 1, 1, 0, 0, 0, 1, 1,
 /* 0x60 */   0, 1, 1, 1, 1, 1, 1, 1,    1, 1, 1, 1, 1, 1, 1, 1,
 /* 0x70 */   1, 1, 1, 1, 1, 1, 1, 1,    1, 1, 1, 0, 0, 0, 1, 0,
 /* 0x80-*/   0,
@@ -145,56 +121,15 @@ get_line(FILE *f)
     return buf;
 }
 
-int
-main(int argc, char **argv)
-{
-    char *buf = NULL;
-    char *cmd;
-    char *dbfile = PKGCDB_FILE;
-    char *pathlist = PKGCDB_PATH_LIST;
-    int ret = 0;
-    extern char *optarg;
-    extern int optind, opterr, optopt;
-    int c;
-    char *p;
-    PathNodeTree pnt;
-    struct timeval tv;
-
-    prog = argv[0];
-
-    p = getenv("AUTO_APT_DB");
-    if (p != NULL && *p == '/') {
-	dbfile = strdup(p);
-    }
-    while ((c = getopt(argc, argv, "dvpqf:P:")) != EOF) {
-	switch (c) {
-	case 'v': verbose++; break;
-	case 'p': profile++; break;
-	case 'q': quiet++; break;
-	case 'd': debug++; break;
-	case 'f': dbfile = strdup(optarg); break;
-	case 'P': pathlist = strdup(optarg); break;
-	default:
-	    usage();
-	}
-    }
-    if (argc < optind + 1) {
-	usage();
-    }
-    cmd = argv[optind];
-
-    mempool_init();
-    pkgtab_init();
-    
-    if (strcmp(cmd, "put") == 0) {
-	int n = 0, nent = 0;
+int main_put(int profile, struct timeval tv, PathNodeTree pnt, char* dbfile, char* pathlist) {
+        int n = 0, nent = 0;
 	int op = '+';
 	time_t t0, t1, t;
 	double tt, ta, min_t, max_t;
-	char *max_file;
+	char *max_file, *buf = NULL;
 
 	t1 = t0 = t = time(NULL);
-	t0--; 
+	t0--;
 	if (profile)
 	    timer_start(&tv);
 	pnt = pkgcdb_load(dbfile, 0, 0);
@@ -213,7 +148,7 @@ main(int argc, char **argv)
 	pathnode_ignore_package(pnt, DEFAULT_PATH_PACKAGE);
 	if (profile)
 	    MSG(("path init: %f sec\n", timer_stop(&tv)));
-	
+
 	ta = 0.0;
 	min_t = 9999.9; max_t = 0.0;
 	max_file = NULL;
@@ -227,8 +162,9 @@ main(int argc, char **argv)
 		break;
 	    if (profile)
 		timer_start(&tv);
-	    if (buf[strlen(buf)-1] == '\n') {
-		buf[strlen(buf)-1] = '\0';
+            int index = strlen(buf)-1;
+	    if (buf[index] == '\n') {
+		buf[index] = '\0';
 	    }
 	    DPRINT((">%s<\n", buf));
 	    fname = buf;
@@ -242,7 +178,7 @@ main(int argc, char **argv)
 		fname += 2;
 	    }
 	    /* search space from backward */
-	    for (pkg = fname + strlen(fname)-1; 
+	    for (pkg = fname + strlen(fname)-1;
 		 !isspace(*pkg) && pkg > fname;
 		 --pkg) {
 		if (*pkg == '/') {
@@ -258,7 +194,7 @@ main(int argc, char **argv)
 		    goto next_line;
 		}
 	    }
-	    if (isspace(*pkg)) 
+	    if (isspace(*pkg))
 		pkg += 1;
 	    /* search end of fname */
 	    for (p = pkg - 1; isspace(*p) && p > fname; --p)
@@ -274,8 +210,8 @@ main(int argc, char **argv)
 	    DPRINT(("I: file=[%s] pkg=[%s]\n", fname, pkg));
 	    t1 = time(NULL);
 	    switch (op) {
-	    case '+': 
-		pkgcdb_put(pnt, fname, pkg, &nent); 
+	    case '+':
+		pkgcdb_put(pnt, fname, pkg, &nent);
 		n++;
 		if (t1 > t0) {
 		    MSG(("put: %d files,  %d entries\r", n, nent));
@@ -311,7 +247,7 @@ main(int argc, char **argv)
 	}
 	if (profile)
 	    MSG(("total %f sec/%d = avg %f sec\n"
-		 "     min = %f, max = %f<%s>\n", 
+		 "     min = %f, max = %f<%s>\n",
 		 ta, n, ta/n, min_t, max_t, max_file));
 	if (profile)
 	    timer_start(&tv);
@@ -319,16 +255,16 @@ main(int argc, char **argv)
 	if (profile)
 	    MSG(("db save: %f sec\n", timer_stop(&tv)));
 	t1 = time(NULL);
-	MSG(("put: %d files,  %d entries done (%ld sec)\n", 
+	MSG(("put: %d files,  %d entries done (%ld sec)\n",
 	     n, nent, (long)(t1 - t)));
-    } else if (strcmp(cmd, "get") == 0) {
+}
+
+int main_get(int profile, struct timeval tv, PathNodeTree pnt, char* dbfile, char* key) {
+        int ret;
 	struct path_node *match;
-	char *key, *mfile = NULL, *ext = NULL;
-	if (argc < optind + 2) {
-	    usage();
-	}
-	key = argv[optind+1];
-	if (profile)
+	char *mfile = NULL, *ext = NULL;
+        
+        if (profile)
 	    timer_start(&tv);
 	pnt = pkgcdb_load(dbfile, 0, 0);
 	if (pnt == NULL) {
@@ -371,15 +307,12 @@ main(int argc, char **argv)
 	}
 	if (profile)
 	    MSG(("output: %f sec\n", timer_stop(&tv)));
-    } else if (strcmp(cmd, "del") == 0) {
-	char *package;
-	pkg_id delpkg;
+        return ret;
+}
 
-	if (argc < optind + 2) {
-	    usage();
-	}
-	package = argv[optind+1];
-	pnt = pkgcdb_load(dbfile, 0, 0);
+int main_del(PathNodeTree pnt, char* dbfile, char* package) {
+	pkg_id delpkg;
+pnt = pkgcdb_load(dbfile, 0, 0);
 	if (pnt == NULL) {
 	    PERROR(("pkgcdb_load"));
 	    exit(1);
@@ -387,15 +320,13 @@ main(int argc, char **argv)
 	delpkg = pkg_intern(pathnode_strtab(pnt), package);
 	pkgcdb_traverse(pnt, delete_pathnode_entry, &delpkg);
 	pkgcdb_save(dbfile, pnt, 1);
-    } else if (strcmp(cmd, "list") == 0) {
-	pnt = pkgcdb_load(dbfile, 0, 0);
+}
+
+int main_list(PathNodeTree pnt, char* dbfile) {
+        pnt = pkgcdb_load(dbfile, 0, 0);
 	if (pnt == NULL) {
 	    PERROR(("pkgcdb_load"));
 	    exit(1);
 	}
 	pkgcdb_traverse(pnt, print_pathnode_entry, NULL);
-    } else {
-	usage();
-    }
-    exit(ret);
 }

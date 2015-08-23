@@ -17,20 +17,20 @@ typedef int str_id;
 typedef struct __strtab *StrTable;
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API StrTable strtab_alloc();
+StrTable strtab_alloc();
 #endif
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void strtab_release(StrTable st);
+void strtab_release(StrTable st);
 #endif
 
-PKGCDB_API str_id str_intern(StrTable st, char *string, int add);
-PKGCDB_API char *str_symbol(StrTable st, str_id sid);
+str_id str_intern(StrTable st, char *string, int add);
+char *str_symbol(StrTable st, str_id sid);
 
 /* dump/restore */
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int strtab_dump(int fd, StrTable st, int shrink);
+int strtab_dump(int fd, StrTable st, int shrink);
 #endif
-PKGCDB_API StrTable strtab_restore(int fd, int str_margin);
+StrTable strtab_restore(int fd, int str_margin);
 
 #endif /* _strtab_h_ */
  

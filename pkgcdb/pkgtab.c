@@ -12,9 +12,9 @@ static char pkgtab_rcsid[] __attribute__((unused)) = "$Id: pkgtab.c,v 1.1 2000/0
 #include <assert.h>
 #include <stdlib.h>
 
-PKGCDB_VARDEF pkg_id pkg_null;
+pkg_id pkg_null;
 
-PKGCDB_API void
+void
 pkgtab_init()
 {
     static int inited = 0;
@@ -27,7 +27,7 @@ pkgtab_init()
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 pkg_init(pkg_id *pid)
 {
     assert(pid != NULL);
@@ -36,7 +36,7 @@ pkg_init(pkg_id *pid)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API pkg_id
+pkg_id
 pkg_intern(StrTable st, char *pkg)
 {
     char *p;
@@ -79,7 +79,7 @@ done:
 }
 #endif
 
-PKGCDB_API char *
+char *
 pkg_symbol(StrTable st, pkg_id pid)
 {
     int len = 0;
@@ -113,7 +113,7 @@ pkg_symbol(StrTable st, pkg_id pid)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int
+int
 pkg_cmp(pkg_id *p0, pkg_id *p1)
 {
     return memcmp(p0, p1, sizeof(pkg_id));

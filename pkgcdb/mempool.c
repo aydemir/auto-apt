@@ -8,27 +8,14 @@
 static char mempool_rcsid[] __attribute__ ((unused)) = "$Id: mempool.c,v 1.4 2003/06/01 16:29:19 ukai Exp $";
 
 #include "mempool.h"
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <unistd.h>
-#include <errno.h>
 
-struct mempool {
-    struct mempool *m_next;
-    int start; /* start index */
-    int count; /* count in this pool */
-    size_t siz;	/* element size */
-    void *mem;	/* (count * siz) bytes */
-};
-
-PKGCDB_API void
+void
 mempool_init()
 {
     return;
 }
 
-PKGCDB_API struct mempool *
+struct mempool *
 mempool_alloc(struct mempool *mp, int count, size_t siz)
 {
     int start;
@@ -62,7 +49,7 @@ mempool_alloc(struct mempool *mp, int count, size_t siz)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 mempool_release(struct mempool *mp)
 {
     struct mempool *cmp, *nmp;
@@ -83,7 +70,7 @@ mempool_release(struct mempool *mp)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 mempool_shrink(struct mempool *mp, int num)
 {
     assert(mp != NULL);
@@ -92,7 +79,7 @@ mempool_shrink(struct mempool *mp, int num)
 }
 #endif
 
-PKGCDB_API void *
+void *
 mempool_mem(struct mempool *mp)
 {
     assert(mp != NULL);
@@ -100,7 +87,7 @@ mempool_mem(struct mempool *mp)
     return mp->mem;
 }
 
-PKGCDB_API void *
+void *
 mempool_mem_avail(struct mempool *mp, int avail)
 {
     assert(mp != NULL);
@@ -112,7 +99,7 @@ mempool_mem_avail(struct mempool *mp, int avail)
     return ((char *)mp->mem + (mp->count - avail) * mp->siz);
 }
 
-PKGCDB_API int
+int
 mempool_index(struct mempool *mp, void *ptr)
 {
     for (; mp != NULL; mp = mp->m_next) {
@@ -125,7 +112,7 @@ mempool_index(struct mempool *mp, void *ptr)
     return -1;
 }
 
-PKGCDB_API void *
+void *
 mempool_fetch(struct mempool *mp, int idx)
 {
     for (; mp != NULL; mp = mp->m_next) {
@@ -197,7 +184,7 @@ mempool_dump_rec(struct mempool *mp, int count, int siz, int fd,
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int
+int
 mempool_dump(struct mempool *mp, int fd, 
 	     int (*serialize)(void *buf, 
 			      void *ptr, int count, int siz, 
@@ -212,7 +199,7 @@ mempool_dump(struct mempool *mp, int fd,
 }
 #endif
 
-PKGCDB_API struct mempool *
+struct mempool *
 mempool_restore(int fd, 
 		void (*unserialize)(struct mempool *mp,
 				    void *ptr, int count, int siz,

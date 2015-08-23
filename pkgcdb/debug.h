@@ -7,31 +7,20 @@
 
 #ifndef _debug_h_
 #define _debug_h_
-static char debug_h_rcsid[] __attribute__ ((unused)) = "$Id: debug.h,v 1.1 2000/07/12 03:42:47 ukai Exp $";
 
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
 
-#ifdef PKGCDB_AUTOAPT
-#define PKGCDB_API	static
-#define PKGCDB_VARDECL	static
-#define PKGCDB_VARDEF	static
-#else
-#define PKGCDB_API
-#define PKGCDB_VARDECL	extern
-#define PKGCDB_VARDEF	
-#endif
-
 #ifdef DEBUG
-PKGCDB_VARDECL int debug;
+int debug;
 #define DPRINT(x) if (debug) printf x
 #else
 #define DPRINT(x)
 #endif
 
-PKGCDB_VARDECL int verbose;
-PKGCDB_VARDECL int quiet;
+int verbose;
+int quiet;
 
 #define MSG(x)	if (!quiet) printf x
 #define VMSG(x)	if (!quiet && verbose) printf x

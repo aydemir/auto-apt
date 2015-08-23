@@ -25,15 +25,15 @@ static char pkgcdb2_rcsid[] __attribute__((unused)) = "$Id: pkgcdb2.c,v 1.4 2000
 #include <time.h>
 
 #ifdef DEBUG
-PKGCDB_VARDEF int debug = 0;
+int debug = 0;
 #endif
-PKGCDB_VARDEF int verbose = 0;
-PKGCDB_VARDEF int quiet = 0;
+int verbose = 0;
+int quiet = 0;
 
 typedef PathNodeTree PkgCDB;
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API PathNodeTree
+PathNodeTree
 pkgcdb_alloc()
 {
     PathNodeTree pnt;
@@ -48,7 +48,7 @@ pkgcdb_alloc()
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 pkgcdb_release(PathNodeTree pnt)
 {
     StrTable st;
@@ -60,7 +60,7 @@ pkgcdb_release(PathNodeTree pnt)
 }
 #endif
 
-PKGCDB_API PathNodeTree
+PathNodeTree
 pkgcdb_load(char *dbfile, int str_margin, int pathnode_margin)
 {
     int fd;
@@ -99,7 +99,7 @@ pkgcdb_load(char *dbfile, int str_margin, int pathnode_margin)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int 
+int 
 pkgcdb_save(char *dbfile, PathNodeTree pnt, int shrink)
 {
     int fd;
@@ -129,7 +129,7 @@ error:
 #endif
 
 
-PKGCDB_API struct path_node *
+struct path_node *
 pkgcdb_get(PathNodeTree pnt, char *file, char **matchfile, char **ext)
 {
     char *p;
@@ -208,7 +208,7 @@ struct pathlist {
     struct path_node *n;
 } *defpathlist = NULL;
 
-PKGCDB_API int
+int
 pkgcdb_path_list_init(PathNodeTree pnt, char *file)
 {
     FILE *fp;
@@ -364,7 +364,7 @@ next_package(char *p, char **np)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API struct path_node *
+struct path_node *
 pkgcdb_put(PathNodeTree pnt, char *file, char *pkg, int *nent)
 {
     char *package, *dups;
@@ -472,7 +472,7 @@ pkgcdb_put(PathNodeTree pnt, char *file, char *pkg, int *nent)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 pkgcdb_del(PathNodeTree pnt, char *file, char *pkg, int *nent)
 {
     char *package;
@@ -560,7 +560,7 @@ pkgcdb_del(PathNodeTree pnt, char *file, char *pkg, int *nent)
 
 #ifndef PKGCDB_AUTOAPT
 
-PKGCDB_API void
+void
 pkgcdb_traverse(PathNodeTree pnt, 
 		void (*func)(PathNodeTree pnt, 
 			     char *path, struct path_node *pn, void *arg),

@@ -5,40 +5,9 @@
  * GPL
  *
  */
+#include "auto-apt.h"
+
 static char auto_apt_rcsid[] __attribute__ ((unused)) = "$Id: auto-apt.c,v 1.28 2000/12/04 14:27:47 ukai Exp $";
-
-#define LARGEFILE_SOURCE
-#define LARGEFILE64_SOURCE
-#define __USE_LARGEFILE64 1
-#define __USE_FILE_OFFSET64 1
-
-#include <unistd.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <dlfcn.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
-#include <limits.h>
-
-#define PKGCDB_AUTOAPT 1
-#include "pkgcdb/debug.h"
-#include "pkgcdb/pkgcdb2.h"
-#include "pkgcdb/mempool.c"
-#include "pkgcdb/strtab.c"
-#include "pkgcdb/pkgtab.c"
-#include "pkgcdb/pathnode.c"
-#include "pkgcdb/pkgcdb2.c"
-
-#define APT_HOOK_EXEC	0
-#define APT_HOOK_OPEN	1
-#define APT_HOOK_ACCESS	2
-#define APT_HOOK_STAT	3
-#define NUM_APT_HOOK	4
 
 static int apt_hook[NUM_APT_HOOK];
 
@@ -53,8 +22,6 @@ static PathNodeTree filedb_tree = NULL;
 #else
 #define LIBCPATH "/lib/libc.so.6"
 #endif
-
-typedef int (*funcptr)();
 
 static struct realfunctab {
     char *name;
@@ -158,7 +125,6 @@ auto_apt_conf_switch(char *name)
     return 1;
 }
 
-#ifdef USE_DETECT
 static char *detectdb_file = NULL;
 static char *detectdb_lockfile = NULL;
 
@@ -283,9 +249,6 @@ done:
     detectdb_unlock(lockfd);
     return e;
 }
-#else
-#define detect_package(filename,func)	
-#endif
 
 /* _init() ? */
 static void
@@ -321,7 +284,9 @@ auto_apt_setup()
 	    }
 	}
         if (auto_apt_conf_switch("AUTO_APT_DEBUG")) {
+#ifdef DEBUG
 	    debug = 1;
+#endif
 	}
 	if (auto_apt_conf_switch("AUTO_APT_QUIET")) {
 	    quiet = 1;
@@ -792,7 +757,7 @@ apt_get_install_for_file(const char *filename)
     }
     return 0;
 }
-
+
 
 int
 execl(const char *path, const char *arg, ...)
@@ -846,6 +811,13 @@ execle(const char *path, const char *arg, ...)
     return execve(path, (char *const *)argv, (char *const *)envp);
 }
 
+/**
+ * 
+ * @param filename
+ * @param argv
+ * @param envp
+ * @return 
+ */
 int
 execve(const  char  *filename, char *const argv [], char *const envp[])
 {
@@ -883,6 +855,13 @@ execve(const  char  *filename, char *const argv [], char *const envp[])
     return e;
 }
 
+/**
+ * Does what libc's `execv` does except adding auto-apt functionality (the
+ * original `execv` is provided by `load_library_symbol`)
+ * @param filename
+ * @param argv
+ * @return 
+ */
 int
 execv(const  char  *filename, char *const argv [])
 {
@@ -918,8 +897,15 @@ execv(const  char  *filename, char *const argv [])
     }
     return e;
 }
-
+
 #undef open
+/**
+ * 
+ * @param filename
+ * @param flags present for compatibility reasons, not used
+ * @param ...
+ * @return 
+ */
 int
 open(const char *filename, int flags, ...)
 {
@@ -1104,7 +1090,6 @@ __libc_open64(const char *filename, int flags, ...)
 }
 #endif
 
-
 int 
 access(const char *filename, int type)
 {
@@ -1176,7 +1161,7 @@ euidaccess(const char *filename, int type)
     }
     return e;
 }
-
+
 
 #undef __xstat
 int
@@ -1292,6 +1277,13 @@ __lxstat(int ver, const char *filename, struct stat *buf)
 }
 
 #undef __lxstat64
+/**
+ * does what `__lxstat64` does
+ * @param ver one of `_STAT_VER`, `_STAT_VER_KERNEL`, `_STAT_VER_LINUX`
+ * @param filename
+ * @param buf
+ * @return 
+ */
 int
 __lxstat64(int ver, const char *filename, struct stat64 *buf)
 {

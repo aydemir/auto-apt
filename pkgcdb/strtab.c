@@ -103,7 +103,7 @@ str_get(StrTable st, str_id sid)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API StrTable
+StrTable
 strtab_alloc()
 {
     int i;
@@ -129,7 +129,7 @@ strtab_alloc()
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 strtab_release(StrTable st)
 {
     assert(st != NULL);
@@ -143,7 +143,7 @@ strtab_release(StrTable st)
 }
 #endif
 
-PKGCDB_API str_id
+str_id
 str_intern(StrTable st, char *string, int add)
 {
     int h;
@@ -183,7 +183,7 @@ str_intern(StrTable st, char *string, int add)
     return sid;
 }
 
-PKGCDB_API char *
+char *
 str_symbol(StrTable st, str_id sid)
 {
     struct str_entry *se;
@@ -198,7 +198,7 @@ str_symbol(StrTable st, str_id sid)
 
 /* dump/restore */
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int
+int
 strtab_dump(int fd, StrTable st, int shrink)
 {
     DPRINT(("strtab: %d strings, new %d alloc, %d bytes left\n"
@@ -219,7 +219,7 @@ strtab_dump(int fd, StrTable st, int shrink)
 #endif
 
 
-PKGCDB_API StrTable
+StrTable
 strtab_restore(int fd, int str_margin)
 {
     StrTable st;

@@ -16,18 +16,18 @@ typedef struct {
     str_id s[3];	/* [<dist>/]<sect>/<package> */
 } pkg_id;
 
-PKGCDB_VARDECL pkg_id pkg_null;
+pkg_id pkg_null;
 
-PKGCDB_API void pkgtab_init();
+void pkgtab_init();
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void pkg_init(pkg_id *pid);
+void pkg_init(pkg_id *pid);
 #endif
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API pkg_id pkg_intern(StrTable st, char *pkg);
+pkg_id pkg_intern(StrTable st, char *pkg);
 #endif
-PKGCDB_API char *pkg_symbol(StrTable st, pkg_id pid);
+char *pkg_symbol(StrTable st, pkg_id pid);
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int pkg_cmp(pkg_id *p0, pkg_id *p1);
+int pkg_cmp(pkg_id *p0, pkg_id *p1);
 #endif
 
 /* dump/restore - by strtab */

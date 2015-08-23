@@ -85,7 +85,7 @@ pathnode_add(PathNodeTree pnt, str_id pathid, pkg_id pkgid)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API PathNodeTree
+PathNodeTree
 pathnode_alloc(StrTable st)
 {
     PathNodeTree pnt;
@@ -106,7 +106,7 @@ pathnode_alloc(StrTable st)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 pathnode_release(PathNodeTree pnt)
 {
     assert(pnt != NULL);
@@ -122,7 +122,7 @@ pathnode_release(PathNodeTree pnt)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 pathnode_ignore_package(PathNodeTree pnt, char *pkg)
 {
     assert(pnt != NULL);
@@ -132,7 +132,7 @@ pathnode_ignore_package(PathNodeTree pnt, char *pkg)
 
 /* package should be lowered (case ignored) */
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API struct path_node *
+struct path_node *
 pathnode_insert(PathNodeTree pnt, struct path_node *pn, 
 		char *path, pkg_id pkgid)
 {
@@ -208,7 +208,7 @@ pathnode_insert(PathNodeTree pnt, struct path_node *pn,
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API struct path_node *
+struct path_node *
 pathnode_chain(PathNodeTree pnt, struct path_node *pn, pkg_id pkgid)
 {
     struct path_node *p;
@@ -238,7 +238,7 @@ pathnode_chain(PathNodeTree pnt, struct path_node *pn, pkg_id pkgid)
 #endif
 
 
-PKGCDB_API struct path_node *
+struct path_node *
 pathnode_retrieve(PathNodeTree pnt, struct path_node *pn, char* path)
 {
     int r;
@@ -288,7 +288,7 @@ pathnode_retrieve(PathNodeTree pnt, struct path_node *pn, char* path)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void pathnode_traverse(PathNodeTree pnt,
+void pathnode_traverse(PathNodeTree pnt,
 				  char *path, struct path_node *pn,
 				  void (*func)(PathNodeTree pnt,
 					       char *path, 
@@ -316,7 +316,7 @@ PKGCDB_API void pathnode_traverse(PathNodeTree pnt,
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API StrTable
+StrTable
 pathnode_strtab(PathNodeTree pnt)
 {
     assert(pnt != NULL);
@@ -324,7 +324,7 @@ pathnode_strtab(PathNodeTree pnt)
 }
 #endif
 
-PKGCDB_API struct path_node *
+struct path_node *
 pathnode_top(PathNodeTree pnt)
 {
     assert(pnt != NULL);
@@ -332,7 +332,7 @@ pathnode_top(PathNodeTree pnt)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API str_id
+str_id
 pathnode_path(PathNodeTree pnt, struct path_node *pn)
 {
     assert(pn != NULL);
@@ -340,7 +340,7 @@ pathnode_path(PathNodeTree pnt, struct path_node *pn)
 }
 #endif
 
-PKGCDB_API char *
+char *
 pathnode_pathname(PathNodeTree pnt, struct path_node *pn)
 {
     assert(pn != NULL);
@@ -349,7 +349,7 @@ pathnode_pathname(PathNodeTree pnt, struct path_node *pn)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API pkg_id
+pkg_id
 pathnode_package(PathNodeTree pnt, struct path_node *pn)
 {
     assert(pn != NULL);
@@ -357,7 +357,7 @@ pathnode_package(PathNodeTree pnt, struct path_node *pn)
 }
 #endif
 
-PKGCDB_API char *
+char *
 pathnode_packagename(PathNodeTree pnt, struct path_node *pn)
 {
     assert(pn != NULL);
@@ -365,7 +365,7 @@ pathnode_packagename(PathNodeTree pnt, struct path_node *pn)
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API struct path_node *
+struct path_node *
 pathnode_next(PathNodeTree pnt, struct path_node *pn)
 {
     assert(pn != NULL);
@@ -374,7 +374,7 @@ pathnode_next(PathNodeTree pnt, struct path_node *pn)
 #endif
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API void
+void
 pathnode_delete(PathNodeTree pnt, struct path_node *pn)
 {
     assert(pn != NULL);
@@ -430,7 +430,7 @@ pathnode_unserialize(struct mempool*mp, void *ptr, int count, int siz,
 }
 
 #ifndef PKGCDB_AUTOAPT
-PKGCDB_API int
+int
 pathnode_dump(int fd, PathNodeTree pnt, int shrink)
 {
     double rl, rr;
@@ -454,7 +454,7 @@ pathnode_dump(int fd, PathNodeTree pnt, int shrink)
 }
 #endif
 
-PKGCDB_API PathNodeTree
+PathNodeTree
 pathnode_restore(int fd, StrTable st, int margin)
 {
     PathNodeTree pnt;
