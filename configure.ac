@@ -5,7 +5,7 @@ AC_PROG_CC
 AM_PROG_AR
 
 LT_INIT # needs to be after AM_PROGS_AR
-AC_CONFIG_HEADERS([check.h])
+AC_CONFIG_HEADERS([config.h])
 
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
 
