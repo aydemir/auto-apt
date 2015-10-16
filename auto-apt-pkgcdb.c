@@ -263,7 +263,7 @@ int main_get(int profile, struct timeval tv, PathNodeTree pnt, char* dbfile, cha
         int ret;
 	struct path_node *match;
 	char *mfile = NULL, *ext = NULL;
-        
+
         if (profile)
 	    timer_start(&tv);
 	pnt = pkgcdb_load(dbfile, 0, 0);

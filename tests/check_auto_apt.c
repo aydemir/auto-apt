@@ -3,14 +3,14 @@
 #include "../auto-apt.h"
 #include <stdlib.h>
 
-START_TEST(test_execl) 
+START_TEST(test_execl)
 {
         int ret_value = execl("which", "ls", (char *)NULL);
         ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
-START_TEST(test_execle) 
+START_TEST(test_execle)
 {
         int ret_value = execle("which", "ls", (char *)NULL);
         ck_assert_int_eq(ret_value, 0);
@@ -22,7 +22,7 @@ START_TEST(test_execve)
         const char argv[] = {"ls"};
         const char envp[] = {};
         int ret_value = execve("which", &argv, &envp);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
@@ -30,7 +30,7 @@ START_TEST(test_execv)
 {
         const char argv[] = {"ls"};
         int ret_value = execv("which", &argv);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
@@ -44,35 +44,35 @@ END_TEST
 START_TEST(test_open64)
 {
         int ret_value = open64("/bin/ls", 0);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
 START_TEST(test___libc_open)
 {
         int ret_value = __libc_open("/bin/ls", 0);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
 START_TEST(test___libc_open64)
 {
         int ret_value = __libc_open64("/bin/ls", 0);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
 START_TEST(test_access)
 {
         int ret_value = access("/bin/ls", 0);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
 START_TEST(test_euidaccess)
 {
         int ret_value = euidaccess("/bin/ls", 0);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
@@ -80,7 +80,7 @@ START_TEST(test___xstat)
 {
         struct stat64 sb;
         int ret_value = __xstat(_STAT_VER, "/bin/ls", &sb);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
@@ -88,15 +88,15 @@ START_TEST(test___xstat64)
 {
         struct stat64 sb;
         int ret_value = __xstat64(_STAT_VER, "/bin/ls", &sb);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
 START_TEST(test___lxstat)
 {
-        struct stat sb;        
+        struct stat sb;
         int ret_value = __lxstat(_STAT_VER, "/bin/ls", &sb);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 
@@ -104,7 +104,7 @@ START_TEST(test___lxstat64)
 {
         struct stat64 sb;
         int ret_value = __lxstat64(_STAT_VER, "/bin/ls", &sb);
-        ck_assert_int_eq(ret_value, 0); 
+        ck_assert_int_eq(ret_value, 0);
 }
 END_TEST
 

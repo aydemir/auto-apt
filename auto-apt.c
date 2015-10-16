@@ -47,13 +47,13 @@ static struct realfunctab {
     {NULL, NULL}
 };
 
-static struct path_node *filename2package(PathNodeTree pnt, 
-					  const char *filename, 
+static struct path_node *filename2package(PathNodeTree pnt,
+					  const char *filename,
 					  char **detect);
 static int command_line_name(char *buf, size_t siz);
 
-static funcptr 
-load_library_symbol(char *name) 
+static funcptr
+load_library_symbol(char *name)
 {
     void *handle;
     const char *error;
@@ -133,7 +133,7 @@ static int
 detectdb_lock()
 {
     struct flock fl;
-    int fd = open_internal(detectdb_lockfile, 
+    int fd = open_internal(detectdb_lockfile,
                            O_RDWR|O_CREAT|O_TRUNC, 0660);
     if (fd == -1) {
         abort();
@@ -146,7 +146,7 @@ again:
     fl.l_len = 1;
     if (fcntl(fd, F_SETLK, &fl) == -1) {
         if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EACCES)
-            goto again; 
+            goto again;
         close(fd);
         abort();
         return -1;
@@ -200,7 +200,7 @@ detect_package(const char *filename, const char *func)
 	       strcmp(filename, filedb_file) == 0) {
 	return 0;
     }
-    
+
     DPRINT(("check by filedb: %s\n", filename));
     pn = filename2package(filedb_tree, filename, &file);
     if (pn == NULL) {
@@ -224,7 +224,7 @@ detect_package(const char *filename, const char *func)
 	goto done;
     {
 	char cmd[PATH_MAX];
-	int fd = open_internal(detectdb_file, 
+	int fd = open_internal(detectdb_file,
 			       O_WRONLY|O_APPEND|O_CREAT, 0644);
 	if (fd < 0) {
 	    abort();
@@ -325,7 +325,7 @@ auto_apt_setup()
 		DPRINT(("filedb: %s\n", filedb_file));
 		filedb_tree = pkgcdb_load(filedb_file, 0, 0);
 		if (filedb_tree == NULL) {
-		    VMSG(("auto-apt filedb %s not loaded, use %s\n", 
+		    VMSG(("auto-apt filedb %s not loaded, use %s\n",
 			 filedb_file, pkgcdb_file));
 		    free(filedb_file);
 		    filedb_file = NULL;
@@ -434,11 +434,11 @@ filename2package(PathNodeTree pnt, const char *filename, char **detected_file)
 		  goto done;
 	      }
 
-	      /* 
-	       * check /var/lib/dpkg/info/<package>.list whether 
+	      /*
+	       * check /var/lib/dpkg/info/<package>.list whether
 	       * this package is already installed
 	       */
-	      snprintf(list, sizeof(list)-1, "/var/lib/dpkg/info/%s.list", 
+	      snprintf(list, sizeof(list)-1, "/var/lib/dpkg/info/%s.list",
 		       pathnode_packagename(pnt, pn));
 	      if (__stat && __stat(_STAT_VER, list, &st) == 0) {
 		  /* exists */
@@ -460,7 +460,7 @@ filename2package(PathNodeTree pnt, const char *filename, char **detected_file)
 	  }
       }
     }
-    DPRINT(("done; package=%s\n", 
+    DPRINT(("done; package=%s\n",
 	    pn ? pathnode_packagename(pnt, pn) : "(null)"));
  done:
     if (fname)
@@ -575,7 +575,7 @@ apt_get_install_for_file(const char *filename)
 
 	DPRINT(("install: %s by %s\n", pkg, cmdname));
 	switch (pkg[0]) {
-	case '!': case '*': case ' ': 
+	case '!': case '*': case ' ':
 	    /* ignore! */
 	    goto done;
 	}
@@ -585,7 +585,7 @@ apt_get_install_for_file(const char *filename)
 		continue;
 	    *pkg++ = '\0';
 	    if (accept) {
-		if (strstr(accept, "non-US") == NULL 
+		if (strstr(accept, "non-US") == NULL
 		    && strcmp(package, "non-US") == 0) {
 		    if (logfd >= 0) {
 			write(logfd, "Ignore[non-US]:", 15);
@@ -662,7 +662,7 @@ apt_get_install_for_file(const char *filename)
 	    if (quiet || !isatty(1)) {
 		/* do nothing */;
 	    } else {
-		printf("Install:%s\tfile:%s\tby:%s\n", 
+		printf("Install:%s\tfile:%s\tby:%s\n",
 		       package, filename, cmdname);
 		fflush(stdout);
 	    }
@@ -712,12 +712,12 @@ apt_get_install_for_file(const char *filename)
 		    dup2(fd, 1);
 		    dup2(fd, 2);
 		} else {
-		    printf("Install:%s\tfile:%s\tby:%s\n", 
+		    printf("Install:%s\tfile:%s\tby:%s\n",
 			   package, filename, cmdname);
 		    fflush(stdout);
 		    if (auto_apt_conf_switch("AUTO_APT_YES") == 0) {
 			char inbuf[64];
-			printf("Do you want to install %s now? [Y/n] ", 
+			printf("Do you want to install %s now? [Y/n] ",
 			       package);
 			fflush(stdout);
 			while (fgets(inbuf, sizeof(inbuf)-1, stdin) != NULL) {
@@ -773,7 +773,7 @@ execl(const char *path, const char *arg, ...)
     i = 0;
     while (argv[i++] != NULL) {
 	if (i == argv_max) {
-	    const char **nptr = 
+	    const char **nptr =
 		alloca ((argv_max *= 2) * sizeof(const char *));
 	    argv = (const char **)memmove(nptr, argv, i);
 	    argv_max += i;
@@ -793,13 +793,13 @@ execle(const char *path, const char *arg, ...)
     unsigned int i;
     va_list args;
     argv[0] = arg;
-    
+
     auto_apt_setup();
     va_start(args, arg);
     i = 0;
     while (argv[i++] != NULL) {
 	if (i == argv_max) {
-	    const char **nptr = 
+	    const char **nptr =
 		alloca((argv_max *= 2) * sizeof(const char *));
 	    argv = (const char **)memmove(nptr, argv, i);
 	    argv_max += i;
@@ -812,11 +812,11 @@ execle(const char *path, const char *arg, ...)
 }
 
 /**
- * 
+ *
  * @param filename
  * @param argv
  * @param envp
- * @return 
+ * @return
  */
 int
 execve(const  char  *filename, char *const argv [], char *const envp[])
@@ -860,7 +860,7 @@ execve(const  char  *filename, char *const argv [], char *const envp[])
  * original `execv` is provided by `load_library_symbol`)
  * @param filename
  * @param argv
- * @return 
+ * @return
  */
 int
 execv(const  char  *filename, char *const argv [])
@@ -878,7 +878,7 @@ execv(const  char  *filename, char *const argv [])
 	errno = EINVAL;
 	return -1;
     }
-    DPRINT(("execv = %p :filename=%s %d,%s\n", 
+    DPRINT(("execv = %p :filename=%s %d,%s\n",
 	    __execv, filename, apt, detectdb_file));
     e = __execv(filename, argv);
     DPRINT(("execvp: filename=%s, e=%d\n", filename, e));
@@ -900,11 +900,11 @@ execv(const  char  *filename, char *const argv [])
 
 #undef open
 /**
- * 
+ *
  * @param filename
  * @param flags present for compatibility reasons, not used
  * @param ...
- * @return 
+ * @return
  */
 int
 open(const char *filename, int flags, ...)
@@ -915,12 +915,12 @@ open(const char *filename, int flags, ...)
     mode_t mode;
     va_list ap;
     static int o = 0; /* XXX: guard for open() in detect_pacage? */
-    
+
     auto_apt_setup();
  again:
     DPRINT(("open: filename=%s \n", filename));
-    if (!apt && detectdb_file && !o) { 
-	o = 1; detect_package(filename, __FUNCTION__); o = 0; 
+    if (!apt && detectdb_file && !o) {
+	o = 1; detect_package(filename, __FUNCTION__); o = 0;
     }
     __open = load_library_symbol("open");
     if (__open == NULL) {
@@ -961,12 +961,12 @@ __libc_open(const char *filename, int flags, ...)
     mode_t mode;
     va_list ap;
     static int o = 0; /* XXX */
-    
+
     auto_apt_setup();
  again:
     DPRINT(("__libc_open: filename=%s \n", filename));
-    if (!apt && detectdb_file && !o) { 
-	o = 1; detect_package(filename, __FUNCTION__); o = 0; 
+    if (!apt && detectdb_file && !o) {
+	o = 1; detect_package(filename, __FUNCTION__); o = 0;
     }
     __open = load_library_symbol("__libc_open");
     if (__open == NULL) {
@@ -1008,12 +1008,12 @@ open64(const char *filename, int flags, ...)
     mode_t mode;
     va_list ap;
     static int o = 0; /* XXX */
-    
+
     auto_apt_setup();
  again:
     DPRINT(("open64: filename=%s \n", filename));
-    if (!apt && detectdb_file && !o) { 
-	o = 1; detect_package(filename, __FUNCTION__); o = 0; 
+    if (!apt && detectdb_file && !o) {
+	o = 1; detect_package(filename, __FUNCTION__); o = 0;
     }
     __open = load_library_symbol("open64");
     if (__open == NULL) {
@@ -1054,12 +1054,12 @@ __libc_open64(const char *filename, int flags, ...)
     mode_t mode;
     va_list ap;
     static int o = 0; /* XXX */
-    
+
     auto_apt_setup();
  again:
     DPRINT(("__libc_open64: filename=%s \n", filename));
-    if (!apt && detectdb_file && !o) { 
-	o = 1; detect_package(filename, __FUNCTION__); o = 0; 
+    if (!apt && detectdb_file && !o) {
+	o = 1; detect_package(filename, __FUNCTION__); o = 0;
     }
     __open = load_library_symbol("__libc_open64");
     if (__open == NULL) {
@@ -1090,13 +1090,13 @@ __libc_open64(const char *filename, int flags, ...)
 }
 #endif
 
-int 
+int
 access(const char *filename, int type)
 {
     int apt = 0;
     int e;
     funcptr __access;
-    
+
     auto_apt_setup();
  again:
     DPRINT(("access: filename=%s \n", filename));
@@ -1126,13 +1126,13 @@ access(const char *filename, int type)
     return e;
 }
 
-int 
+int
 euidaccess(const char *filename, int type)
 {
     int apt = 0;
     int e;
     funcptr __euidaccess;
-    
+
     auto_apt_setup();
  again:
     DPRINT(("euidaccess: filename=%s \n", filename));
@@ -1170,7 +1170,7 @@ __xstat(int ver, const char *filename, struct stat *buf)
     int apt = 0;
     int e;
     funcptr __stat;
-    
+
     auto_apt_setup();
  again:
     DPRINT(("stat: filename=%s \n", filename));
@@ -1208,7 +1208,7 @@ __xstat64(int ver, const char *filename, struct stat64 *buf)
     int apt = 0;
     int e;
     funcptr __stat;
-    
+
     auto_apt_setup();
  again:
     DPRINT(("stat64: filename=%s \n", filename));
@@ -1246,7 +1246,7 @@ __lxstat(int ver, const char *filename, struct stat *buf)
     int apt = 0;
     int e;
     funcptr __stat;
-    
+
     auto_apt_setup();
  again:
     DPRINT(("lstat: filename=%s \n", filename));
@@ -1282,7 +1282,7 @@ __lxstat(int ver, const char *filename, struct stat *buf)
  * @param ver one of `_STAT_VER`, `_STAT_VER_KERNEL`, `_STAT_VER_LINUX`
  * @param filename
  * @param buf
- * @return 
+ * @return
  */
 int
 __lxstat64(int ver, const char *filename, struct stat64 *buf)
@@ -1290,7 +1290,7 @@ __lxstat64(int ver, const char *filename, struct stat64 *buf)
     int apt = 0;
     int e;
     funcptr __stat;
-    
+
     auto_apt_setup();
  again:
     DPRINT(("lstat64: filename=%s \n", filename));

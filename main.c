@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   main.c
  * Author: richter
  *
@@ -31,7 +31,7 @@ usage(char* prog)
 }
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
     char *cmd;
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
 
     mempool_init();
     pkgtab_init();
-        
+
     if (strcmp(cmd, "put") == 0) {
             ret = main_put(profile, tv, pnt, dbfile, pathlist);
     } else if (strcmp(cmd, "get") == 0) {
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
     } else {
 	usage(prog);
     }
-        
-        return (EXIT_SUCCESS);
+
+        return (ret);
 }
 

@@ -42,12 +42,12 @@ struct __pathnode_tree {
 };
 
 
-/* XXX: hack 
+/* XXX: hack
  * This tree structure show good performance if tree is balanced
- * so, it's important that cmp()'s ouptput is balanced 
+ * so, it's important that cmp()'s ouptput is balanced
  *
  * str_id: sequential number (memory index in strtab:mempool)
- * 
+ *
  */
 static inline int cmp(str_id s0, str_id s1) {
 #define h(s)	((s & 0xff) << 24 | (s & 0xff00) << 8 | \
@@ -63,9 +63,9 @@ pathnode_add(PathNodeTree pnt, str_id pathid, pkg_id pkgid)
     struct path_node *pn;
     assert(pnt != NULL);
     assert(pnt->st != NULL);
-    
+
     if (pnt->pn_next == NULL || pnt->pn_avail <= 0) {
-	pnt->p_st = mempool_alloc(pnt->p_st, 
+	pnt->p_st = mempool_alloc(pnt->p_st,
 			     PATH_MEMPOOL_SIZE, sizeof(struct path_node));
 	pnt->pn_next = (struct path_node *)mempool_mem(pnt->p_st);
 	pnt->pn_avail = PATH_MEMPOOL_SIZE;
@@ -95,7 +95,7 @@ pathnode_alloc(StrTable st)
     memset(pnt, 0, sizeof(struct __pathnode_tree));
     pnt->st = st;
     pnt->num_pn = 0;
-    pnt->p_st = mempool_alloc(NULL, 
+    pnt->p_st = mempool_alloc(NULL,
 			      PATH_MEMPOOL_SIZE, sizeof(struct path_node));
     pnt->pn_next = (struct path_node *)mempool_mem(pnt->p_st);
     pnt->pn_avail = PATH_MEMPOOL_SIZE;
@@ -133,7 +133,7 @@ pathnode_ignore_package(PathNodeTree pnt, char *pkg)
 /* package should be lowered (case ignored) */
 #ifndef PKGCDB_AUTOAPT
 struct path_node *
-pathnode_insert(PathNodeTree pnt, struct path_node *pn, 
+pathnode_insert(PathNodeTree pnt, struct path_node *pn,
 		char *path, pkg_id pkgid)
 {
     struct path_node *npn;
@@ -150,7 +150,7 @@ pathnode_insert(PathNodeTree pnt, struct path_node *pn,
 	npn = pathnode_add(pnt, pathid, pkgid);
 	pn->down = npn;
 #if DEBUGDEBUG
-	DPRINT(("add: %p(%s)->down = %p [%s, %s]\n", 
+	DPRINT(("add: %p(%s)->down = %p [%s, %s]\n",
 		pn, pathnode_pathname(pnt, pn),
 		npn, path, pkg_symbol(pnt->st, pkgid)));
 #endif
@@ -162,10 +162,10 @@ pathnode_insert(PathNodeTree pnt, struct path_node *pn,
 	if (pn->pathname == NULL) pn->pathname = str_symbol(pnt->st, pn->path);
 	r = cmp(pn->path, pathid);
 #if DEBUGDEBUG
-	DPRINT(("check? %s<=>%s [%d]\n", 
+	DPRINT(("check? %s<=>%s [%d]\n",
 		path, pn->pathname, r));
 #endif
-	
+
 	if (r == 0) {
 	    /* collision */
 	    return pathnode_chain(pnt, pn, pkgid);
@@ -245,7 +245,7 @@ pathnode_retrieve(PathNodeTree pnt, struct path_node *pn, char* path)
     str_id pathid = str_intern(pnt->st, path, 0);
 
     assert(pn != NULL);
-    DPRINT(("retr: %p(%s) %s\n", 
+    DPRINT(("retr: %p(%s) %s\n",
 	    pn, pathnode_pathname(pnt, pn), path));
     pn = pn->down;
     if (pn == NULL) {
@@ -267,7 +267,7 @@ pathnode_retrieve(PathNodeTree pnt, struct path_node *pn, char* path)
 
 	if (r < 0) {
 #if DEBUGDEBUG
-	    DPRINT(("go %p(%s)->left = %p\n", 
+	    DPRINT(("go %p(%s)->left = %p\n",
 		    pn, pathnode_pathname(pnt, pn), pn->left));
 #endif
 	    if (pn->left == NULL)
@@ -275,7 +275,7 @@ pathnode_retrieve(PathNodeTree pnt, struct path_node *pn, char* path)
 	    pn = pn->left;
 	} else {
 #if DEBUGDEBUG
-	    DPRINT(("go %p(%s)->right = %p\n", 
+	    DPRINT(("go %p(%s)->right = %p\n",
 		    pn, pathnode_pathname(pnt, pn), pn->right));
 #endif
 	    if (pn->right == NULL)
@@ -291,8 +291,8 @@ pathnode_retrieve(PathNodeTree pnt, struct path_node *pn, char* path)
 void pathnode_traverse(PathNodeTree pnt,
 				  char *path, struct path_node *pn,
 				  void (*func)(PathNodeTree pnt,
-					       char *path, 
-					       struct path_node *pn, 
+					       char *path,
+					       struct path_node *pn,
 					       void *arg),
 				  void *arg)
 {
@@ -442,7 +442,7 @@ pathnode_dump(int fd, PathNodeTree pnt, int shrink)
 	rr = (double)pnt->num_right / pnt->num_left;
     }
     DPRINT(("pathnode: %d entries, new %d alloc, left %d entries\n"
-	    "   left=%d times, right=%d times  (%f:%f)\n", 
+	    "   left=%d times, right=%d times  (%f:%f)\n",
 	    pnt->num_pn, pnt->pn_alloc, pnt->pn_avail,
 	    pnt->num_left, pnt->num_right, rl, rr));
     if (shrink) {

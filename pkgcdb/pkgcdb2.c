@@ -99,7 +99,7 @@ pkgcdb_load(char *dbfile, int str_margin, int pathnode_margin)
 }
 
 #ifndef PKGCDB_AUTOAPT
-int 
+int
 pkgcdb_save(char *dbfile, PathNodeTree pnt, int shrink)
 {
     int fd;
@@ -154,7 +154,7 @@ pkgcdb_get(PathNodeTree pnt, char *file, char **matchfile, char **ext)
 	    continue;
 	}
 	p++;
-	
+
 	assert(p - file < PATH_MAX);
 	strncpy(path, file, p - file);
 	path[p - file] = '\0';
@@ -173,8 +173,8 @@ pkgcdb_get(PathNodeTree pnt, char *file, char **matchfile, char **ext)
 	match = pn;
 	assert(pn != NULL);
 	assert(match != NULL);
-	DPRINT(("match:%s[%s] rest>%s\n", 
-		pathnode_pathname(pnt, pn), 
+	DPRINT(("match:%s[%s] rest>%s\n",
+		pathnode_pathname(pnt, pn),
 		pathnode_packagename(pnt, match), file));
     }
     DPRINT(("last?%s (%ld)\n", file, p - file));
@@ -265,8 +265,8 @@ pkgcdb_path_list_init(PathNodeTree pnt, char *file)
 	    pl->next = defpathlist;
 	    defpathlist = pl;
 	} else {
-	    for (plp = defpathlist; 
-		 plp != NULL && plp->next != NULL; 
+	    for (plp = defpathlist;
+		 plp != NULL && plp->next != NULL;
 		 plp = plp->next) {
 		if (pl->pathlen > plp->next->pathlen) {
 		    pl->next = plp->next;
@@ -331,7 +331,7 @@ path_list_check(char *file)
 	if (pl->n != NULL) {
 	    if (len >= pl->pathlen &&
 		strncmp(file, pl->path, pl->pathlen) == 0) {
-		DPRINT(("path list match[%s]:%s <=> %s", 
+		DPRINT(("path list match[%s]:%s <=> %s",
 			pl->pkg, pl->path, file));
 		return pl;
 	    }
@@ -347,7 +347,7 @@ next_package(char *p, char **np)
 {
     int i;
     static char package[PATH_MAX];
-    
+
     *np = NULL;
     if (p == NULL || *p == '\0')
 	return NULL;
@@ -411,7 +411,7 @@ pkgcdb_put(PathNodeTree pnt, char *file, char *pkg, int *nent)
 	file += pl->pathlen;
 	pn = pl->n;
 	if (strcmp(pl->pkg, DEFAULT_PATH_PACKAGE) == 0) {
-	    DPRINT((" start=<%s> %p(%s)", 
+	    DPRINT((" start=<%s> %p(%s)",
 		    file, pn, pathnode_pathname(pnt, pn)));
 	} else {
 	    /* all dir/files under local,man are ignored */
@@ -506,7 +506,7 @@ pkgcdb_del(PathNodeTree pnt, char *file, char *pkg, int *nent)
 	file += pl->pathlen;
 	pn = pl->n;
 	if (strcmp(pl->pkg, DEFAULT_PATH_PACKAGE) == 0) {
-	    DPRINT((" start=<%s> %p(%s)", 
+	    DPRINT((" start=<%s> %p(%s)",
 		    file, pn, pathnode_pathname(pnt, pn)));
 	} else {
 	    /* all dir/files under local,man are ignored */
@@ -561,8 +561,8 @@ pkgcdb_del(PathNodeTree pnt, char *file, char *pkg, int *nent)
 #ifndef PKGCDB_AUTOAPT
 
 void
-pkgcdb_traverse(PathNodeTree pnt, 
-		void (*func)(PathNodeTree pnt, 
+pkgcdb_traverse(PathNodeTree pnt,
+		void (*func)(PathNodeTree pnt,
 			     char *path, struct path_node *pn, void *arg),
 		void *arg)
 {

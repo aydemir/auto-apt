@@ -158,8 +158,8 @@ str_intern(StrTable st, char *string, int add)
     if (st->hashtab[h] != str_null) {
 	struct str_entry *se;
 	int depth = 0;
-	for (sid = st->hashtab[h], se = str_get(st, sid); 
-	     se != NULL && sid != str_null; 
+	for (sid = st->hashtab[h], se = str_get(st, sid);
+	     se != NULL && sid != str_null;
 	     sid = se->s_next, se = str_get(st, sid)) {
 	    depth++;
 	    if (strcmp(se->data, string) == 0) {
@@ -203,8 +203,8 @@ strtab_dump(int fd, StrTable st, int shrink)
 {
     DPRINT(("strtab: %d strings, new %d alloc, %d bytes left\n"
 	    "  hash %d used (%3.1f%%), %d conflicts, %d depth\n",
-	    st->num_str, st->str_alloc, st->str_avail, 
-	    st->num_hash, (double)st->num_hash*100.0/HASH_SIZE, 
+	    st->num_str, st->str_alloc, st->str_avail,
+	    st->num_hash, (double)st->num_hash*100.0/HASH_SIZE,
 	    st->num_conflicts, st->num_max_depth));
     if (shrink) {
 	mempool_shrink(st->s_st, st->str_avail);

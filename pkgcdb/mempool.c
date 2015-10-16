@@ -1,5 +1,5 @@
 /*-
- * mempool.c 
+ * mempool.c
  * Copyright (c) 2000 Fumitoshi UKAI <ukai@debian.or.jp>
  * GPL
  *
@@ -103,7 +103,7 @@ int
 mempool_index(struct mempool *mp, void *ptr)
 {
     for (; mp != NULL; mp = mp->m_next) {
-	if (mp->mem <= ptr 
+	if (mp->mem <= ptr
 	    && (char *)ptr < ((char *)mp->mem + (mp->count * mp->siz))) {
 	    assert(((char *)ptr - (char *)mp->mem)%mp->siz == 0);
 	    return ((char *)ptr - (char *)mp->mem)/mp->siz + mp->start;
@@ -126,9 +126,9 @@ mempool_fetch(struct mempool *mp, int idx)
 
 #ifndef PKGCDB_AUTOAPT
 static int
-mempool_dump_rec(struct mempool *mp, int count, int siz, int fd, 
-		 int (*serialize)(void *buf, 
-				  void *ptr, int count, int siz, 
+mempool_dump_rec(struct mempool *mp, int count, int siz, int fd,
+		 int (*serialize)(void *buf,
+				  void *ptr, int count, int siz,
 				  void *arg),
 		 void *arg)
 {
@@ -152,7 +152,7 @@ mempool_dump_rec(struct mempool *mp, int count, int siz, int fd,
 	DPRINT(("-header: end\n"));
 	return 0;
     }
-    e = mempool_dump_rec(mp->m_next, count + mp->count, mp->siz, fd, 
+    e = mempool_dump_rec(mp->m_next, count + mp->count, mp->siz, fd,
 			 serialize, arg);
     if (e < 0) {
 	PERROR(("write data"));
@@ -185,9 +185,9 @@ mempool_dump_rec(struct mempool *mp, int count, int siz, int fd,
 
 #ifndef PKGCDB_AUTOAPT
 int
-mempool_dump(struct mempool *mp, int fd, 
-	     int (*serialize)(void *buf, 
-			      void *ptr, int count, int siz, 
+mempool_dump(struct mempool *mp, int fd,
+	     int (*serialize)(void *buf,
+			      void *ptr, int count, int siz,
 			      void *arg),
 	     void *arg)
 {
@@ -200,7 +200,7 @@ mempool_dump(struct mempool *mp, int fd,
 #endif
 
 struct mempool *
-mempool_restore(int fd, 
+mempool_restore(int fd,
 		void (*unserialize)(struct mempool *mp,
 				    void *ptr, int count, int siz,
 				    void *arg),
